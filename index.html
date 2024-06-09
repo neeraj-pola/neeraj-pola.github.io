@@ -6,7 +6,7 @@ layout: default
   {% for post in site.posts %}
     <article class="post">
       <a href="{{ site.baseurl }}{{ post.url }}">
-        <video muted autoplay="True" controls style="max-width: 100%">
+        <video muted autoplay loop controls style="max-width: 100%">
           <source src="{{ post.thumbnail }}" type="video/mp4">
         </video>
       </a>
