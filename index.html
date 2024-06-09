@@ -5,6 +5,7 @@ layout: default
 <div class="posts">
   {% for post in site.posts %}
     <article class="post">
+      <a href="{{ site.baseurl }}{{ post.url }}" ><img src="{{ post.thumbnail }}" />
 
       <h1><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h1>
 
