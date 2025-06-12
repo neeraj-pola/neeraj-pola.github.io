@@ -19,6 +19,25 @@ layout: default
       </div>
 
       <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
+
+    </article>
+
+    <article class="post">
+      <a href="{{ site.baseurl }}{{ post.url }}">
+        <video muted autoplay loop controls style="max-width: 100%">
+          <source src="{{ post.thumbnail }}" type="video/mp4">
+        </video>
+      </a>
+      <!-- <a href="{{ site.baseurl }}{{ post.url }}" ><img src="{{ post.thumbnail }}" /> -->
+
+      <h1><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h1>
+
+      <div class="entry">
+        {{ post.excerpt }}
+      </div>
+
+      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
+      
     </article>
   {% endfor %}
 </div>
