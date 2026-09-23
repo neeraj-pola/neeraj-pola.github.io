@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Comic Canvas — A Diary That Draws Itself
-thumbnail: "images/Comc-Canvas/architecture_overview.mp4"
+thumbnail: "images/Comic-Canvas/architecture_overview.mp4"
 ---
 ***
 I've always wanted to visualize my diary. Not just write it — actually see the day.
@@ -17,7 +17,7 @@ The other part I didn't expect to get attached to: **it learns your taste**. Fou
 ## The shape of it
 
 <video muted loop autoplay controls style="max-width: 100%">
-    <source src="{{ site.baseurl }}/images/Comc-Canvas/architecture_overview.mp4" type="video/mp4">
+    <source src="{{ site.baseurl }}/images/Comic-Canvas/architecture_overview.mp4" type="video/mp4">
 </video>
 
 Three stages, and the third one feeds back into the first: **your diary text becomes a prompt, the prompt becomes an image, and every tap you make on that image nudges tomorrow's prompt a little closer to your taste.** That loop — draw, watch what you pick, adjust — is the entire idea. Everything below is just what's actually inside each of those three boxes.
@@ -25,7 +25,7 @@ Three stages, and the third one feeds back into the first: **your diary text bec
 ## Stage 1 — from words to a prompt
 
 <video muted loop autoplay controls style="max-width: 100%">
-    <source src="{{ site.baseurl }}/images/Comc-Canvas/prompt_to_image.mp4" type="video/mp4">
+    <source src="{{ site.baseurl }}/images/Comic-Canvas/prompt_to_image.mp4" type="video/mp4">
 </video>
 
 Your raw text gets pulled apart into **beats** — what happened, where, when, how it felt — and a script agent picks four of them to become panels. Each panel's prompt is then built in two layers: a **character clause** that's identical every single time (the same face, hair, build, phrased the same way) and an **environment clause** that's free to change (the kitchen, the gym, the light, the time of day). The character clause never varies panel to panel or day to day — that's where the consistency actually comes from, before the image model has even been called.
@@ -35,7 +35,7 @@ Your raw text gets pulled apart into **beats** — what happened, where, when, h
 The obvious way to get a consistent face is to train a small custom model on your own photos — a LoRA, fine-tuned to draw you specifically. So that's what I tried first: `FLUX.1-dev` as the base, a rank-32 LoRA adapter on top, 2,000 real training steps at a constant 1e-4 learning rate, AdamW8bit, EMA-smoothed. Nothing exotic — just a real fine-tuning run with a checkpoint saved every 250 steps so the best one could be picked automatically rather than just trusting the last one.
 
 <video muted loop autoplay controls style="max-width: 100%">
-    <source src="{{ site.baseurl }}/images/Comc-Canvas/lora_finetuning.mp4" type="video/mp4">
+    <source src="{{ site.baseurl }}/images/Comic-Canvas/lora_finetuning.mp4" type="video/mp4">
 </video>
 
 It didn't work well enough. With around 15 real photos to train on, the results were close but never reliably right — one panel would nail it, the next would drift into a different gender entirely, and the one after that looked like a completely different person with different features and a different age, none of whom I owe an explanation to. I scored every one of the 8 checkpoints automatically and picked the best of the batch, and the honest number was still 0% on the identity checklist. I tried tuning the training run itself more than once and the ceiling didn't move — the real bottleneck was data, not settings, and getting meaningfully more of my own photos wasn't a real option (there are only so many angles you can photograph yourself from before it stops being research and starts being a phase).
@@ -43,7 +43,7 @@ It didn't work well enough. With around 15 real photos to train on, the results 
 The fix ended up being simpler than training anything: skip fine-tuning entirely.
 
 <video muted loop autoplay controls style="max-width: 100%">
-    <source src="{{ site.baseurl }}/images/Comc-Canvas/master_image_flux_kontext.mp4" type="video/mp4">
+    <source src="{{ site.baseurl }}/images/Comic-Canvas/master_image_flux_kontext.mp4" type="video/mp4">
 </video>
 
 Design **one approved master image** of the character up front, and instead of training a model to *remember* a face, hand that master image to an edit model — [Flux Kontext](https://fal.ai/models/fal-ai/flux-2/turbo/edit), specifically — alongside the day's own prompt, every single time. Zero training steps, one inference call per panel, a few cents of API cost a day. The model isn't recalling a face from weights anymore — it's looking at an actual reference image and editing a new scene around it. That's a much easier problem for it to get right consistently, and it shows: three real panels from three genuinely different days (a morning jog, a laptop session, a cricket match), and the same face holds in every one — a 3-for-3 pass rate on the identity checklist.
@@ -53,7 +53,7 @@ The master image itself matters more than it sounds like it should — it's not 
 ## Stage 3 — learning what you like
 
 <video muted loop autoplay controls style="max-width: 100%">
-    <source src="{{ site.baseurl }}/images/Comc-Canvas/learning_loop.mp4" type="video/mp4">
+    <source src="{{ site.baseurl }}/images/Comic-Canvas/learning_loop.mp4" type="video/mp4">
 </video>
 
 Every panel is drawn three slightly different ways — say, warmer, as-usual, and cooler — and you tap the one you like. That single tap is genuinely richer than it looks: your pick beat *both* other options, so it teaches the model two comparisons at once, not one. Efficient, in the way that only mildly manipulative UX can be.
@@ -70,11 +70,11 @@ None of this is one big model doing everything. It's a few small, specific tools
 
 The idea above is abstract. Here's the real page, built from actually running the app on my own days — and the real formula behind each piece of it, not just the vibe.
 
-![Comic Canvas learning stats]({{ site.baseurl }}/images/Comc-Canvas/01-stats.png)
+![Comic Canvas learning stats]({{ site.baseurl }}/images/Comic-Canvas/01-stats.png)
 
 Four numbers, always visible: how many taps it's learned from, whether it's actually beating a plain hand-set ranking yet (not just matching it — *beating* it, on taps it predicted *before* seeing your answer), how often you picked the option it expected you to, and what it's currently nudging your prompts toward. Every one of those four numbers is a real output of the math further down this page — this tile is just the summary before the receipts.
 
-![What it thinks you like]({{ site.baseurl }}/images/Comc-Canvas/02-what-it-thinks.png)
+![What it thinks you like]({{ site.baseurl }}/images/Comic-Canvas/02-what-it-thinks.png)
 
 Every feature it tracks — color warmth, framing, how much you care about the background, whether the face actually looks like you — gets its own bar and a "how sure am I" whisker. A bar with a wide whisker means it genuinely doesn't know yet; that's shown honestly instead of guessing.
 
@@ -118,11 +118,11 @@ That same step also shrinks the *uncertainty* about that weight — variance dro
 
 Bar climbing, whisker shrinking, from the same handful of taps.
 
-![Your latest tap]({{ site.baseurl }}/images/Comc-Canvas/03-latest-tap.png)
+![Your latest tap]({{ site.baseurl }}/images/Comic-Canvas/03-latest-tap.png)
 
 The single most recent tap, explained in plain language: what it guessed you'd pick *before* you picked, and whether it called it right. That guess is just `sigmoid(w · x)` again, computed the instant before your tap lands and never touched afterward — so "did it call it right" is a real, un-fudgeable prediction, not a retroactive one.
 
-![Your sweet spot, knob by knob]({{ site.baseurl }}/images/Comc-Canvas/04-sweet-spot.png)
+![Your sweet spot, knob by knob]({{ site.baseurl }}/images/Comic-Canvas/04-sweet-spot.png)
 
 This is the part I get asked about most, and it's a genuinely different model from the bars above — not because it needed to be fancier, but because a *linear* model can't represent "warm, but not too warm." Give it only a straight-line weight per knob and the best it can ever say is "more is always better," which for someone with an actual sweet spot pushes the default to the extreme and makes things *worse* than doing nothing at all. The fix is one extra term per knob — the level, *and* the level squared:
 
@@ -147,7 +147,7 @@ mean = 0×1 + (−0.8)×1 = −0.80
 
 With a posterior standard deviation around 0.55, that's `−0.80 / 0.55 ≈ −1.45`, and `Φ(−1.45) ≈ 7%`. A 7% chance "warmer" beats "as usual" is nowhere near the 99% confidence the app requires before it'll actually move your default — so it correctly does nothing, and "as usual" stays the default. That's the curve in the screenshot: a peak sitting right at zero, because that's genuinely where this knob's hill is tallest.
 
-![Do its defaults suit you]({{ site.baseurl }}/images/Comc-Canvas/05-defaults-suit.png)
+![Do its defaults suit you]({{ site.baseurl }}/images/Comic-Canvas/05-defaults-suit.png)
 
 A day-by-day track of how often its default (unmodified) option is the one you actually kept. It should climb as the defaults get closer to your real taste — and if it doesn't, that's the model telling on itself honestly.
 
@@ -175,11 +175,11 @@ weight(age) = 0.5 ^ (age / 80)
 
 A comparison 80 taps old counts for exactly half of a fresh one — old taps never get deleted, they just quietly stop mattering, like most opinions.
 
-![What it has written about you]({{ site.baseurl }}/images/Comc-Canvas/06-taste-notes.png)
+![What it has written about you]({{ site.baseurl }}/images/Comic-Canvas/06-taste-notes.png)
 
 After enough picks, it writes a few short, plain-English notes about your taste and hands them to the script writer before it writes your next day. Not a dashboard number — actual sentences a model reads before drawing anything. There's no new formula here; this is just the weights and knobs above, translated out of math and into English on your behalf, which is frankly more than I do for most of my own opinions.
 
-![The bell curve behind each bar]({{ site.baseurl }}/images/Comc-Canvas/07-bell-curve.png)
+![The bell curve behind each bar]({{ site.baseurl }}/images/Comic-Canvas/07-bell-curve.png)
 
 Every one of those bars from earlier is really the peak of a full bell curve underneath — literally the same `mean`/`variance` pair from the Newton update, drawn out. Narrow and tall means it's sure; wide and flat means it isn't, and you can watch that curve visibly narrow, tap by tap, as more evidence comes in.
 
@@ -191,7 +191,7 @@ w_sample = mean + std × z          (z a fresh random draw from N(0, 1))
 
 Worked example, using the 5-tap belief from earlier (mean 1.18, std ≈ 0.73): a real draw with `z = 0.29` gives `w_sample = 1.18 + 0.73 × 0.29 = 1.39` — plausible, but not identical to the mean. A wider curve means a bigger std, which means draws land further from the peak, which means more exploring. The uncertainty on the chart *is* the exploration knob, for free.
 
-![Is it predicting you]({{ site.baseurl }}/images/Comc-Canvas/08-predicting.png)
+![Is it predicting you]({{ site.baseurl }}/images/Comic-Canvas/08-predicting.png)
 
 A rolling scoreboard: over your last ten taps, how often did the learned model call it correctly, against how often the plain hand-set weights would have. It only gets to take over once it's genuinely, measurably ahead:
 
