@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Comic Canvas — A Diary That Draws Itself
-thumbnail: "images/Comic-Canvas/architecture_overview.mp4"
+thumbnail: "images/Comic-Canvas/thumbnail.mp4"
 ---
 ***
 I've always wanted to visualize my diary. Not just write it — actually see the day.
