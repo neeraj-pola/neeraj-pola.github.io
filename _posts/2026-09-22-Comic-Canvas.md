@@ -32,15 +32,21 @@ Your raw text gets pulled apart into **beats** — what happened, where, when, h
 
 ## Stage 2 — actually generating a face that stays the same
 
-The obvious way to get a consistent face is to train a small custom model on your own photos, a LoRA, fine-tuned to draw you specifically. So that's what I tried first.
+The obvious way to get a consistent face is to train a small custom model on your own photos, a LoRA, fine-tuned to draw you specifically. So that's what I tried first: `FLUX.1-dev` as the base, a rank-32 LoRA adapter on top, 2,000 real training steps at a constant 1e-4 learning rate, AdamW8bit, EMA-smoothed. Nothing exotic, just a real fine-tuning run with a checkpoint saved every 250 steps so the best one could be picked automatically rather than just trusting the last one.
 
 <video muted loop autoplay controls style="max-width: 100%">
-    <source src="{{ site.baseurl }}/images/ComicCanvas/image_generation_pivot.mp4" type="video/mp4">
+    <source src="{{ site.baseurl }}/images/ComicCanvas/lora_finetuning.mp4" type="video/mp4">
 </video>
 
-It didn't work well enough. With around 15 real photos to train on, the results were close but never reliably right — one panel would nail it, the next would drift, and the one after that looked like someone else's cousin. I tried tuning the training run itself more than once and the ceiling didn't move much; the real bottleneck was data, not settings, and getting meaningfully more of my own photos wasn't a real option.
+It didn't work well enough. With around 15 real photos to train on, the results were close but never reliably right — one panel would nail it, the next would drift into a different gender entirely, and the one after that looked like a completely different person with different features and a different age. I scored every one of the 8 checkpoints automatically and picked the best of the batch, and the honest number was still 0% on the identity checklist. I tried tuning the training run itself more than once and the ceiling didn't move; the real bottleneck was data, not settings, and getting meaningfully more of my own photos wasn't a real option.
 
-The fix ended up being simpler than training anything: skip fine-tuning entirely. Design **one approved master image** of the character up front, and instead of training a model to *remember* a face, hand that master image to an edit model (Flux Kontext) alongside the day's prompt, every single time. The model isn't recalling a face from weights anymore — it's looking at an actual reference image and editing a new scene around it. That's a much easier problem for it to get right consistently, and it shows.
+The fix ended up being simpler than training anything: skip fine-tuning entirely.
+
+<video muted loop autoplay controls style="max-width: 100%">
+    <source src="{{ site.baseurl }}/images/ComicCanvas/master_image_flux_kontext.mp4" type="video/mp4">
+</video>
+
+Design **one approved master image** of the character up front, and instead of training a model to *remember* a face, hand that master image to an edit model, [Flux Kontext](https://fal.ai/models/fal-ai/flux-2/turbo/edit) specifically, alongside the day's own prompt, every single time. Zero training steps, one inference call per panel, a few cents of API cost a day. The model isn't recalling a face from weights anymore — it's looking at an actual reference image and editing a new scene around it. That's a much easier problem for it to get right consistently, and it shows: three real panels from three genuinely different days (a morning jog, a laptop session, a cricket match), and the same face holds in every one — a 3-for-3 pass rate on the identity checklist.
 
 The master image itself matters more than it sounds like it should — it's not just a nice starting portrait. Every one of the hundreds of panels this app will ever generate for you points back at that one file. It's the actual source of the consistency, not the prompt wording.
 
