@@ -207,4 +207,6 @@ Thanks for reading this far, genuinely, past the sigmoid, that's real commitment
 
 Do share your feedback and suggestions (if any) to [my mail neerajpola2002@gmail.com](mailto:neerajpola2002@gmail.com).
 
+**"Seize the day, see the day, keep the day."**
+
 Happy building!
