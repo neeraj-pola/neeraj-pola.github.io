@@ -94,10 +94,27 @@ new w = w - gradient / curvature = 0.40
 
 That same step also shrinks the *uncertainty* about that weight — variance drops from 1.00 to 0.81. Keep tapping "warmer," and the real fit moves like this:
 
-| taps | weight (the bar) | variance (the whisker) |
-|---|---|---|
-| 1 | 0.40 | 0.81 |
-| 5 | 1.18 | 0.53 |
+<table style="border-collapse: collapse; width: 100%; max-width: 420px; margin: 1em 0;">
+<thead>
+<tr style="border-bottom: 2px solid #151515;">
+<th style="text-align: left; padding: 8px 16px 8px 0;">taps</th>
+<th style="text-align: left; padding: 8px 16px;">weight (the bar)</th>
+<th style="text-align: left; padding: 8px 0;">variance (the whisker)</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom: 1px solid #ddd;">
+<td style="padding: 8px 16px 8px 0;">1</td>
+<td style="padding: 8px 16px;">0.40</td>
+<td style="padding: 8px 0;">0.81</td>
+</tr>
+<tr>
+<td style="padding: 8px 16px 8px 0;">5</td>
+<td style="padding: 8px 16px;">1.18</td>
+<td style="padding: 8px 0;">0.53</td>
+</tr>
+</tbody>
+</table>
 
 Bar climbing, whisker shrinking, from the same handful of taps.
 
@@ -140,13 +157,21 @@ Three real confidence rules gate every default you see here: it needs **20 taps*
 weight(age) = 0.5 ^ (age / 80)
 ```
 
-| age (taps) | weight |
-|---|---|
-| 0 | 1.00 |
-| 20 | 0.84 |
-| 40 | 0.71 |
-| 80 | 0.50 |
-| 160 | 0.25 |
+<table style="border-collapse: collapse; width: 100%; max-width: 320px; margin: 1em 0;">
+<thead>
+<tr style="border-bottom: 2px solid #151515;">
+<th style="text-align: left; padding: 8px 24px 8px 0;">age (taps)</th>
+<th style="text-align: left; padding: 8px 0;">weight</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom: 1px solid #ddd;"><td style="padding: 8px 24px 8px 0;">0</td><td style="padding: 8px 0;">1.00</td></tr>
+<tr style="border-bottom: 1px solid #ddd;"><td style="padding: 8px 24px 8px 0;">20</td><td style="padding: 8px 0;">0.84</td></tr>
+<tr style="border-bottom: 1px solid #ddd;"><td style="padding: 8px 24px 8px 0;">40</td><td style="padding: 8px 0;">0.71</td></tr>
+<tr style="border-bottom: 1px solid #ddd;"><td style="padding: 8px 24px 8px 0;">80</td><td style="padding: 8px 0;">0.50</td></tr>
+<tr><td style="padding: 8px 24px 8px 0;">160</td><td style="padding: 8px 0;">0.25</td></tr>
+</tbody>
+</table>
 
 A comparison 80 taps old counts for exactly half of a fresh one — old taps never get deleted, they just quietly stop mattering, like most opinions.
 
